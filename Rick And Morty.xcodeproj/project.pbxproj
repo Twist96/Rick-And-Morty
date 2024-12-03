@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		E2970ED92CFF2BE5004CEBDA /* Fakery in Frameworks */ = {isa = PBXBuildFile; productRef = E2970ED82CFF2BE5004CEBDA /* Fakery */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		E2970E812CFDE11D004CEBDA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E2970ED92CFF2BE5004CEBDA /* Fakery in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +117,7 @@
 			);
 			name = "Rick And Morty";
 			packageProductDependencies = (
+				E2970ED82CFF2BE5004CEBDA /* Fakery */,
 			);
 			productName = "Rick And Morty";
 			productReference = E2970E702CFDE11B004CEBDA /* Rick And Morty.app */;
@@ -195,6 +201,9 @@
 			);
 			mainGroup = E2970E672CFDE11B004CEBDA;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				E2970ED72CFF2BE5004CEBDA /* XCRemoteSwiftPackageReference "Fakery" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E2970E712CFDE11B004CEBDA /* Products */;
 			projectDirPath = "";
@@ -558,6 +567,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E2970ED72CFF2BE5004CEBDA /* XCRemoteSwiftPackageReference "Fakery" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/vadymmarkov/Fakery";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E2970ED82CFF2BE5004CEBDA /* Fakery */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E2970ED72CFF2BE5004CEBDA /* XCRemoteSwiftPackageReference "Fakery" */;
+			productName = Fakery;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E2970E682CFDE11B004CEBDA /* Project object */;
 }
