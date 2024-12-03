@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CharacterView: View {
+struct CharacterItemView: View {
     var character: Character
     var body: some View {
         HStack {
@@ -63,9 +63,9 @@ struct CharacterView: View {
 
 #Preview {
     VStack {
-        CharacterView(character: .mock(status: .alive))
-        CharacterView(character: .mock(status: .dead))
-        CharacterView(character: .mock(status: .unknown))
+        CharacterItemView(character: .mock(status: .alive))
+        CharacterItemView(character: .mock(status: .dead))
+        CharacterItemView(character: .mock(status: .unknown))
     }
     .padding(.horizontal)
 }

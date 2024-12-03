@@ -25,8 +25,12 @@ struct CharacterDetails: Codable {
     }
 }
 
-enum CharacterStatus: String, Codable {
+enum CharacterStatus: String, CaseIterable, Codable, Identifiable {
     case alive = "Alive"
     case dead = "Dead"
     case unknown = "unknown"
+
+    var id: String {
+        self.rawValue
+    }
 }
