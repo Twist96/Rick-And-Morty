@@ -25,4 +25,12 @@ struct Character: Codable, Identifiable {
             status: status
         )
     }
+
+    static func mocks() -> [Character] {
+        [
+            .mock(status: .alive),
+            .mock(status: .dead),
+            .mock(status: .unknown)
+        ]
+    }
 }
