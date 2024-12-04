@@ -9,28 +9,19 @@ import SwiftUI
 
 struct ContentView: View {
     var characterService: ICharacterService = CharacterService()
+    @State private var path = NavigationPath()
 
     var body: some View {
-//        VStack {
-//            Image(systemName: "globe")
-//                .imageScale(.large)
-//                .foregroundStyle(.tint)
-//            Text("Hello, world!")
-//        }
-//        .padding()
-        CharacterView()
-//        .task {
-//            do {
-//                let query = CharacterQuery(page: 2, status: nil)
-//                let characters = try await characterService.get(query: query)
-//                print(characters)
-//                let character = try await characterService.get(id: "1")
-//                print(character)
-//            } catch {
-//                print(error)
-//            }
-//
-//        }
+        NavigationStack(path: $path) {
+            CharacterView { character in
+                path.append(character)
+            }
+            .navigationDestination(for: Character.self) { character in
+                CharacterDetailsView(
+                    viewModel: CharacterDetailsViewModel(character)
+                )
+            }
+        }
     }
 }
 

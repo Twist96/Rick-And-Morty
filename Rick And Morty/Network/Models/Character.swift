@@ -8,7 +8,7 @@
 import Fakery
 import Foundation
 
-struct Character: Codable, Identifiable {
+struct Character: Codable, Identifiable, Hashable {
     let id: Int
     let name: String
     let image: String

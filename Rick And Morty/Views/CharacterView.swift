@@ -12,6 +12,7 @@ struct CharacterView: View {
     @State var characters: [Character] = []
     @State var page = 0
     var characterService: ICharacterService = CharacterService()
+    var onSelect: ((Character) -> Void)?
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -23,6 +24,9 @@ struct CharacterView: View {
             TableView(items: characters, loadMore: loadMore) { character in
                 CharacterItemView(character: character)
                     .padding(.bottom, 12)
+                    .onTapGesture {
+                        onSelect?(character)
+                    }
             }
         }
         .padding(.horizontal, 16)

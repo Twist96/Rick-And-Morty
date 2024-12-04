@@ -5,6 +5,8 @@
 //  Created by Matthew Chukwuemeka on 02/12/2024.
 //
 
+import Fakery
+
 struct CharacterDetails: Codable {
     let id: Int
     let name: String
@@ -12,15 +14,31 @@ struct CharacterDetails: Codable {
     let species: String
     let status: CharacterStatus
     let gender: String
+    let location: Location
 
     static func mock() -> CharacterDetails {
+        let faker = Faker()
         return .init(
-            id: 1,
-            name: "Rick Sanchez",
-            image: "rick",
+            id: faker.number.randomInt(),
+            name: faker.name.name(),
+            image: faker.internet.image(),
             species: "Human",
             status: .alive,
-            gender: "Male"
+            gender: faker.gender.binaryType(),
+            location: .mock()
+        )
+    }
+}
+
+struct Location: Codable {
+    let name: String
+    let url: String
+
+    static func mock() -> Location {
+        let faker = Faker()
+        return .init(
+            name: faker.address.city(),
+            url: faker.internet.url()
         )
     }
 }
