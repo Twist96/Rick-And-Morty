@@ -20,7 +20,7 @@ struct Character: Codable, Identifiable, Hashable {
         return Character(
             id: faker.number.randomInt(),
             name: faker.name.name(),
-            image: faker.internet.image(),
+            image: faker.internet.image(width: 200, height: 200),
             species: "Human",
             status: status
         )

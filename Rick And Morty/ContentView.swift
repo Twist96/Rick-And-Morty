@@ -13,7 +13,7 @@ struct ContentView: View {
 
     var body: some View {
         NavigationStack(path: $path) {
-            CharacterView { character in
+            CharacterListView { character in
                 path.append(character)
             }
             .navigationDestination(for: Character.self) { character in
