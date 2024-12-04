@@ -8,10 +8,7 @@
 import SwiftUI
 
 struct CharacterView: View {
-    @State var selectedStatus: CharacterStatus?
-    @State var characters: [Character] = []
-    @State var page = 0
-    var characterService: ICharacterService = CharacterService()
+    @StateObject var viewModel: CharacterViewModel = CharacterViewModel()
     var onSelect: ((Character) -> Void)?
 
     var body: some View {
@@ -19,9 +16,12 @@ struct CharacterView: View {
             Text("Characters")
                 .font(.title)
 
-            StatusPicker(selectedStatus: $selectedStatus)
+            StatusPicker(selectedStatus: $viewModel.selectedStatus)
 
-            TableView(items: characters, loadMore: loadMore) { character in
+            TableView(
+                items: viewModel.characters ?? [],
+                loadMore: viewModel.loadMore
+            ) { character in
                 CharacterItemView(character: character)
                     .padding(.bottom, 12)
                     .onTapGesture {
@@ -31,27 +31,63 @@ struct CharacterView: View {
         }
         .padding(.horizontal, 16)
         .task {
-            characters = await getCharacters() ?? []
+            if viewModel.page == 0 {
+                viewModel.characters = await viewModel.getCharacters() ?? []
+            }
         }
-        .onChange(of: selectedStatus) { prev, current in
-            page = 0
-            Task {
-                let characters = await getCharacters()
+    }
+}
+
+#Preview {
+    CharacterView(
+        viewModel: CharacterViewModel(
+            characterService: CharacterServiceDouble()
+        )
+    )
+}
+
+
+import Combine
+class CharacterViewModel: ObservableObject {
+    @Published var characters: [Character]?
+    @Published var page = 0
+    @Published var selectedStatus: CharacterStatus?
+    let characterService: ICharacterService
+
+    private var cancellables: Set<AnyCancellable> = []
+
+    init(characterService: ICharacterService = CharacterService()) {
+        self.characterService = characterService
+
+        $selectedStatus.sink { characterStatus in
+            self.setCharacters()
+        }.store(in: &cancellables)
+    }
+
+    @MainActor
+    func loadMore() {
+        Task {
+            let characters = await getCharacters()
+            self.characters?.append(contentsOf: characters ?? [])
+        }
+    }
+
+//    @MainActor
+    func setCharacters(){
+        self.page = 0
+        Task {
+            let characters = await getCharacters()
+            DispatchQueue.main.async {
                 self.characters = characters ?? []
             }
         }
     }
 
-    func loadMore() {
-        Task {
-            let characters = await getCharacters()
-            self.characters.append(contentsOf: characters ?? [])
-        }
-    }
-
+    @MainActor
     func getCharacters() async -> [Character]? {
         do {
-            let query = CharacterQuery(page: page + 1, status: selectedStatus)
+            page = page + 1
+            let query = CharacterQuery(page: page, status: selectedStatus)
             let res = try await characterService.get(query: query)
             return res.results
         } catch {
@@ -59,8 +95,5 @@ struct CharacterView: View {
             return nil
         }
     }
-}
 
-#Preview {
-    CharacterView(characterService: CharacterServiceDouble())
 }

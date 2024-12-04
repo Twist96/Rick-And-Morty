@@ -16,6 +16,7 @@ struct CharacterItemView: View {
                     .resizable()
                     .frame(width: 75, height: 75)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
+
             } placeholder: {
                 Image(systemName: "person")
                     .resizable()

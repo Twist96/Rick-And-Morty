@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CharacterDetailsView: View {
-    @StateObject var viewModel: CharacterDetailsViewModel
+    @ObservedObject var viewModel: CharacterDetailsViewModel
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
@@ -97,7 +97,8 @@ struct CharacterDetailsView: View {
 }
 
 #Preview {
-    CharacterDetailsView(viewModel: CharacterDetailsViewModel(Character.mock()))
+    CharacterDetailsView(
+        viewModel: CharacterDetailsViewModel(Character.mock()))
 }
 
 class CharacterDetailsViewModel: ObservableObject {
