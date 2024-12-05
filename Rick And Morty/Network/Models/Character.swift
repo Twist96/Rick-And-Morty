@@ -26,11 +26,11 @@ struct Character: Codable, Identifiable, Hashable {
         )
     }
 
-    static func mocks() -> [Character] {
-        [
-            .mock(status: .alive),
-            .mock(status: .dead),
-            .mock(status: .unknown)
-        ]
+    static func mocks(count: Int = 3) -> [Character] {
+        var list: [Character] = []
+        for _ in 0..<count {
+            list.append(Character.mock())
+        }
+        return list
     }
 }

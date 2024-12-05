@@ -27,11 +27,21 @@ struct CharacterService: ICharacterService {
 }
 
 struct CharacterServiceDouble: ICharacterService {
+    var mockCharacterDetails: CharacterDetails?
+    var mockCharacters: [Character]?
+    var shouldThrowError: Bool = false
+
     func get(id: String) async throws -> CharacterDetails {
-        CharacterDetails.mock()
+        if shouldThrowError {
+            throw NSError(domain: "Mock Error", code: -1)
+        }
+        return mockCharacterDetails ?? CharacterDetails.mock()
     }
     
     func get(query: CharacterQuery?) async throws -> ApiListResult<[Character]> {
-        .mock(value: [Character.mock()])
+        if shouldThrowError {
+            throw NSError(domain: "Mock Error", code: -1)
+        }
+        return .mock(value: Character.mocks())
     }
 }
