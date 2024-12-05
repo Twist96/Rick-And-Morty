@@ -5,55 +5,83 @@
 //  Created by Matthew Chukwuemeka on 04/12/2024.
 //
 
-import Combine
 import Foundation
 
 class CharacterListViewModel: ObservableObject {
     @Published var characters: [Character]?
     @Published var page = 0
     @Published var selectedStatus: CharacterStatus?
-    let characterService: ICharacterService
+    @Published var isLoading: Bool = false
+    @Published var error: Error?
 
-    private var cancellables: Set<AnyCancellable> = []
+    private let characterService: ICharacterService
+    private var fetchTask: Task<Void, Never>?
 
     init(characterService: ICharacterService = CharacterService()) {
         self.characterService = characterService
-
-        //listen for change to selectedStatus
-        $selectedStatus.sink { characterStatus in
-            self.setCharacters()
-        }.store(in: &cancellables)
+        setupStatusChangeHandling()
     }
 
-    @MainActor
-    func loadMore() {
-        Task {
-            let characters = await getCharacters()
-            self.characters?.append(contentsOf: characters ?? [])
+    private func setupStatusChangeHandling() {
+        let statusStream = AsyncStream { continuation in
+            let cancellable = $selectedStatus.sink { status in
+                continuation.yield(status)
+            }
+
+            continuation.onTermination = { _ in
+                cancellable.cancel()
+            }
         }
-    }
 
-    func setCharacters(){
-        self.page = 0
-        Task {
-            let characters = await getCharacters()
-            DispatchQueue.main.async {
-                self.characters = characters ?? []
+        Task { [weak self] in
+            for await _ in statusStream {
+                await self?.resetCharacters()
             }
         }
     }
 
     @MainActor
-    func getCharacters() async -> [Character]? {
-        do {
-            let query = CharacterQuery(page: page + 1, status: selectedStatus)
-            let res = try await characterService.get(query: query)
-            page = page + 1
-            return res.results
-        } catch {
-            print(error)
-            return nil
+    func loadMore() {
+        fetchTask?.cancel()
+
+        fetchTask = Task {
+            do {
+                isLoading = true
+                let characters = try await getCharacters()
+                self.characters?.append(contentsOf: characters ?? [])
+                isLoading = false
+            } catch {
+                self.error = error
+            }
         }
+    }
+
+    @MainActor
+    func resetCharacters(){
+        fetchTask?.cancel()
+
+        self.page = 0
+        fetchTask = Task {
+            do {
+                isLoading = true
+                let newCharacters = try await getCharacters()
+                characters = newCharacters
+                isLoading = false
+            } catch {
+                self.error = error
+            }
+        }
+    }
+
+    @MainActor
+    func getCharacters() async throws -> [Character]? {
+        let query = CharacterQuery(page: page + 1, status: selectedStatus)
+
+        try Task.checkCancellation()
+
+        let response = try await characterService.get(query: query)
+        page = page + 1
+        return response.results
     }
 
 }

@@ -32,7 +32,7 @@ struct CharacterListView: View {
         .padding(.horizontal, 16)
         .task {
             if viewModel.page == 0 {
-                viewModel.characters = await viewModel.getCharacters() ?? []
+                viewModel.resetCharacters()
             }
         }
     }
