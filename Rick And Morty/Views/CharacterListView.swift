@@ -31,7 +31,7 @@ struct CharacterListView: View {
         }
         .padding(.horizontal, 16)
         .task {
-            if viewModel.page == 0 {
+            if viewModel.characters == nil {
                 viewModel.resetCharacters()
             }
         }
