@@ -42,8 +42,9 @@ class CharacterListViewModel: ObservableObject {
 
     @MainActor
     func loadMore() {
+        if isLoading { return }
+        isLoading = true
         fetchTask?.cancel()
-
         fetchTask = Task {
             do {
                 isLoading = true
